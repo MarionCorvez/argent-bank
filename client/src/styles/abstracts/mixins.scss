@@ -1,0 +1,19 @@
+// Breakpoints
+
+@mixin bp($point) {
+  @if $point == large {
+    @media screen and (width > 1024px) {
+      @content;
+    }
+  } @else if $point == medium {
+    @media screen and (width >= 768px) {
+      @content;
+    }
+  } @else if $point == small/medium {
+    @media screen and (768px <= width <= 1024px) {
+      @content;
+    }
+  }
+}
+
+// @include a.bp(medium)
