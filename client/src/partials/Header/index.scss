@@ -1,23 +1,15 @@
 @use "@styles/abstracts" as a;
 
-.header {
-  color: a.$white;
-  margin-bottom: 2rem;
-}
-
 .main-nav {
   @extend %flex-a--center;
   justify-content: space-between;
   padding: 5px 20px;
 
   &-item {
+    text-decoration: none;
     font-weight: bold;
     color: a.$indigo;
     margin-right: 0.5rem;
-
-    &.active {
-      color: a.$green;
-    }
 
     &:hover {
       text-decoration: underline;

@@ -18,6 +18,12 @@ export default function Form() {
             <label htmlFor="remember-me">Remember me</label>
           </div>
           <button className="sign-in-button">Sign In</button>
+          <p className="sign-in-error" data-id="sign-in-error-fields">
+            Please complete all the fields.
+          </p>
+          <p className="sign-in-error" data-id="sign-in-error-info">
+            Please check your informations.
+          </p>
         </form>
       </section>
     </>

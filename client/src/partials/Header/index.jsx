@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import argentBankLogo from "@img/argentbanklogo.webp";
+import Nav from "@components/Nav";
 
 export default function Header() {
   return (
@@ -14,12 +15,7 @@ export default function Header() {
             />
             <h1 className="sr-only">Argent Bank</h1>
           </NavLink>
-          <div>
-            <NavLink to="/login" className="main-nav-item">
-              <i className="fa fa-user-circle"></i>
-              Sign In
-            </NavLink>
-          </div>
+          <Nav />
         </nav>
       </header>
     </>

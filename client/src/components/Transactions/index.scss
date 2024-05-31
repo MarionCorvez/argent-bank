@@ -1,8 +1,14 @@
-.edit-button {
-  border-color: #00bc77;
-  background-color: #00bc77;
-  color: #fff;
+@use "@styles/abstracts" as a;
+
+.edit-button,
+.transaction-button {
+  border-color: a.$green-light;
+  background-color: a.$green-light;
+  color: a.$white;
   font-weight: bold;
+}
+
+.edit-button {
   padding: 10px;
 }
 
@@ -11,23 +17,8 @@
   width: 100%;
   padding: 8px;
   font-size: 1.1rem;
-  font-weight: bold;
   margin-top: 1rem;
-  border-color: #00bc77;
-  background-color: #00bc77;
-  color: #fff;
-}
-
-@media (min-width: 720px) {
-  .account {
-    flex-direction: row;
-  }
-
-  .account-content-wrapper.cta {
-    flex: 0;
-  }
-
-  .transaction-button {
+  @include a.bp(medium) {
     width: 200px;
   }
 }
