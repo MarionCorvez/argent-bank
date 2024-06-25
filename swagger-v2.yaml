@@ -103,45 +103,46 @@ paths:
           description: Internal Server Error
 
   #new entries
-  #could be instead: /user/accounts
-  /accounts/{userId}:
+  #could be instead: /accounts/{userId}
+  #userId is available in token
+  /accounts:
     get:
       security:
         - Bearer: []
       tags:
         - Accounts Module
       summary: User Accounts API
-      description: Returns an array of all accounts
-      parameters:
-        - in: path
-          name: userId
-          description: ID of the user
-          required: true
-          type: string
+      description: Returns an array of all accounts relative to a user [with token]
       responses:
         "200":
           description: User account retrieved successully
           schema:
             $ref: "#/definitions/AccountsResponse"
-        #do not provide authentification information
-        "400":
-          description: Invalid Fields
+        "401":
+          description: Not Authorized
+        "404":
+          description: Accounts not found
         "500":
           description: Internal Server Error
 
-  /transaction/{accountId}:
-    # Get all the transactions of an account
+  # Get all the transactions of an account
+  /accounts/transactions/{accountId}:
     get:
       security:
         - Bearer: []
       tags:
-        - Transactions Module
-      summary: Transactions API
-      description: Returns an array of all transactions
+        - Accounts Module
+      summary: User Transactions API
+      description: Returns an array with all transactions of the current month relative to an account
       parameters:
         - in: path
           name: accountId
           description: ID of the related account
+          required: true
+          type: string
+        - in: query
+          name: month
+          description: Current month with format "YYYY/MM"
           required: true
           type: string
       responses:
@@ -149,9 +150,10 @@ paths:
           description: Transactions retrieved successully
           schema:
             $ref: "#/definitions/TransactionsResponse"
-        #do not provide authentification information
-        "400":
-          description: Invalid Fields
+        "401":
+          description: Not Authorized
+        "404":
+          description: Transactions not found
         "500":
           description: Internal Server Error
 
@@ -185,6 +187,8 @@ paths:
             $ref: "#/definitions/TransactionCategoryResponse"
         "400":
           description: Invalid Fields
+        "401":
+          description: Not Authorized
         "500":
           description: Internal Server Error
     # Post a note about the transaction
@@ -216,6 +220,8 @@ paths:
             $ref: "#/definitions/TransactionNoteResponse"
         "400":
           description: Invalid Fields
+        "401":
+          description: Not Authorized
         "500":
           description: Internal Server Error
 
@@ -410,11 +416,11 @@ definitions:
           id:
             type: integer
             format: int64
-            example: 1
+            example: 2
             description: transaction category ID
           name:
             type: string
-            example: "Food"
+            example: "Hobbies"
 
   TransactionCategoryResponse:
     type: object
