@@ -1,6 +1,10 @@
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Nav() {
+  // const tasks = useSelector((state) => console.log(state));
+  const tasks = useSelector((state) => state.user);
+
   return (
     <>
       <div className="main-nav--log-in">

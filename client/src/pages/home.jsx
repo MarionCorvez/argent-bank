@@ -2,7 +2,7 @@ import datas from "@data/features.json";
 import Hero from "@components/Hero";
 import Features from "@components/Features";
 
-export default function Index() {
+export default function Home() {
   return (
     <>
       <main>

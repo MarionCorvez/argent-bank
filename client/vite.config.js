@@ -1,22 +1,19 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import pages from "vite-plugin-pages";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   css: {
     devSourcemap: true,
   },
-  plugins: [
-    react(),
-    pages({
-      dirs: "src/pages",
-    }),
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      "@app": path.resolve(__dirname, "src/app"),
+      "@api": path.resolve(__dirname, "src/features/api"),
+      "@users": path.resolve(__dirname, "src/features/users"),
       "@assets": path.resolve(__dirname, "src/assets"),
       "@img": path.resolve(__dirname, "src/assets/img"),
       "@data": path.resolve(__dirname, "src/assets/data"),
