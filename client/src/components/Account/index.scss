@@ -1,5 +1,28 @@
 @use "@styles/abstracts" as a;
 
+.edit {
+  &-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  &-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    & input {
+      padding: 0.5rem;
+    }
+  }
+  &-button {
+    cursor: pointer;
+    margin: 1rem 0.5rem 0.5rem;
+    width: 150px;
+  }
+}
+
 .account {
   @extend %flex-a--center;
   justify-content: space-between;

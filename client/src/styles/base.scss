@@ -35,6 +35,9 @@ body {
 .header {
   color: a.$white;
   margin-bottom: 2rem;
+  &-title {
+    font-size: 2rem;
+  }
 }
 
 .sr-only {

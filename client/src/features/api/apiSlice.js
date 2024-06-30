@@ -19,6 +19,6 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["User"],
+  tagTypes: ["User"], // Tag to invalidate the cache
   endpoints: (builder) => ({}),
 });

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@users/authSlice";
+import { isRemembered } from "@users/authSlice";
 import { useLoginMutation } from "@users/authApiSlice";
 
 export default function SignIn() {
@@ -34,6 +35,14 @@ export default function SignIn() {
     try {
       const userData = await login({ email, password }).unwrap();
       console.log("OK", userData);
+      if ("data" in userData) {
+        const { token } = userData.data.body;
+        if (!isRemembered) {
+          window.sessionStorage.setItem("tokenID", token);
+        } else {
+          window.localStorage.setItem("tokenID", token);
+        }
+      }
       // saving username and get an access token
       dispatch(setCredentials({ ...userData, email }));
       setEmail("");
@@ -84,7 +93,14 @@ export default function SignIn() {
         />
       </div>
       <div className="input-remember">
-        <input type="checkbox" id="remember-me" />
+        <input
+          type="checkbox"
+          id="remember-me"
+          defaultChecked={false}
+          onChange={(e) => {
+            dispatch(isRemembered(e.target.checked));
+          }}
+        />
         <label htmlFor="remember-me">Remember me</label>
       </div>
       <button className="sign-in-button">Sign In</button>
