@@ -1,7 +1,10 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials, setEditing } from "@users/authSlice";
-import { useGetProfileMutation } from "@users/authApiSlice";
+import {
+  useGetProfileMutation,
+  useUpdateProfileMutation,
+} from "@users/authApiSlice";
 
 export default function Account() {
   const dispatch = useDispatch();
@@ -9,9 +12,13 @@ export default function Account() {
   // Catch authSlice state
   const CurrentUser = useSelector((state) => state.auth);
 
+  const token = CurrentUser.token;
+  console.log("token:", token);
+  const isLoggedIn = CurrentUser.isLoggedIn;
+  console.log("isLoggedIn:", isLoggedIn);
+
   // Display edit section
   const isEditing = CurrentUser.isEditing;
-  console.log("isEditing", isEditing);
   const handleEdit = (event) => {
     event.preventDefault();
     dispatch(setEditing());
@@ -38,20 +45,47 @@ export default function Account() {
   const welcome = CurrentUser.user ? firstName + " " + lastName + "!" : "";
 
   // Manage edit username
-  const emailRef = useRef();
-  const errRef = useRef();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errMsg, setErrMsg] = useState("");
-  const handleUserInput = (e) => setEmail(e.target.value);
-  const handlePwdInput = (e) => setPassword(e.target.value);
+
+  //const [username, setUsername] = useState(CurrentUser.user.userName);
+  // const [username, setUsername] = useState("");
+
+  const handleUserInput = (event) => {
+    event.preventDefault();
+    // username(event.target.value);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(setEditing());
   };
 
-  return (
+  // Edit username
+  /*   const [updateProfile, { isSuccess, isError, error }] =
+    useUpdateProfileMutation();
+  const [username, setUsername] = useState(CurrentUser.user.userName);
+  const onUsernameChanged = (e) => setUsername(e.target.value);
+
+  const onSaveUserClicked = async (e) => {
+    if (password) {
+      await updateProfile({ id: user.id, username, password, roles, active });
+    } else {
+      await updateUser({ id: user.id, username, roles, active });
+    }
+  }; */
+
+  /*   const [setUserName] = useUpdateProfileMutation();
+  useEffect(() => {
+    const putNewUsername = async () => {
+      const DataUsername = await newUsername().unwrap();
+      return DataUsername;
+    };
+    putNewUsername().then((resp) => {
+      console.log(resp.body);
+      dispatch(setCredentials({ ...CurrentUser, user: resp.body }));
+    });
+  }, []); */
+
+  const content = (
     <>
       <section className={`header ${isEditing ? "is-hidden" : ""}`}>
         <h1 className="header-title">
@@ -109,4 +143,6 @@ export default function Account() {
       </section>
     </>
   );
+
+  return content;
 }

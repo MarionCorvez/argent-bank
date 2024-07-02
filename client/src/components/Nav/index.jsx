@@ -8,17 +8,17 @@ export default function Nav() {
 
   // Catch authSlice state
   const CurrentUser = useSelector((state) => state.auth);
-
-  // Display user informations
   const userName = CurrentUser.user.userName;
   const isLoggedIn = CurrentUser.isLoggedIn;
+
+  // Manage logout
   const handleLogOut = (event) => {
     event.preventDefault();
     dispatch(logOut());
     navigate("/");
   };
 
-  return (
+  const content = (
     <>
       {!isLoggedIn ? (
         <div>
@@ -41,4 +41,6 @@ export default function Nav() {
       )}
     </>
   );
+
+  return content;
 }
