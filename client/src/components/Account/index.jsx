@@ -1,45 +1,41 @@
 import { useRef, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import {
-  selectCurrentUser,
-  selectCurrentToken,
-  selectIsEditing,
-  setEditing,
-} from "@users/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials, setEditing } from "@users/authSlice";
 import { useGetProfileMutation } from "@users/authApiSlice";
 
 export default function Account() {
+  const dispatch = useDispatch();
+
   // Catch authSlice state
-  const user = useSelector(selectCurrentUser);
-  console.log(user);
-  const token = useSelector(selectCurrentToken);
-  console.log(token);
+  const CurrentUser = useSelector((state) => state.auth);
 
   // Display edit section
-  const isEditing = useSelector(selectIsEditing);
-  const dispatch = useDispatch();
-  function handleEdit() {
-    dispatch(setEditing());
-  }
-  /*   function handleCancel() {
-    dispatch(setEditing());
-  }
- */
-
-  // Cancel non fonctionnel
-  const handleCancel = () => {
-    dispatch(setEditing());
-  };
-
-  const [profile, { isLoading }] = useGetProfileMutation();
-
-  const welcome = user ? `Welcome ${user} ${profile}!` : "Welcome!";
-
-  const handleSubmit = (event) => {
+  const isEditing = CurrentUser.isEditing;
+  console.log("isEditing", isEditing);
+  const handleEdit = (event) => {
     event.preventDefault();
     dispatch(setEditing());
   };
+
+  // Get profile informations
+  const [profile, { isLoading }] = useGetProfileMutation();
+  useEffect(() => {
+    const getProfile = async () => {
+      const DataUser = await profile().unwrap();
+      return DataUser;
+    };
+    getProfile().then((resp) => {
+      console.log(resp.body);
+      dispatch(setCredentials({ ...CurrentUser, user: resp.body }));
+    });
+  }, []);
+
+  // Display user informations
+  const userName = CurrentUser.user.userName;
+  const firstName = CurrentUser.user.firstName;
+  const lastName = CurrentUser.user.lastName;
+  // Display first + lastname according to design/user.html
+  const welcome = CurrentUser.user ? firstName + " " + lastName + "!" : "";
 
   // Manage edit username
   const emailRef = useRef();
@@ -48,8 +44,12 @@ export default function Account() {
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const handleUserInput = (e) => setEmail(e.target.value);
-
   const handlePwdInput = (e) => setPassword(e.target.value);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    dispatch(setEditing());
+  };
 
   return (
     <>
@@ -57,7 +57,7 @@ export default function Account() {
         <h1 className="header-title">
           Welcome back
           <br />
-          {welcome}! {token}
+          {welcome}
         </h1>
         <button className="edit-button" onClick={handleEdit}>
           Edit Name
@@ -73,8 +73,7 @@ export default function Account() {
             <input
               type="text"
               id="username"
-              ref={emailRef}
-              value={email}
+              value={userName}
               onChange={handleUserInput}
               autoComplete="off"
             />
@@ -83,10 +82,8 @@ export default function Account() {
             <label htmlFor="username">First name:</label>
             <input
               type="text"
-              id="username"
-              ref={emailRef}
-              value={email}
-              onChange={handleUserInput}
+              id="firstname"
+              value={firstName}
               autoComplete="off"
               disabled
             />
@@ -95,10 +92,8 @@ export default function Account() {
             <label htmlFor="username">Last name:</label>
             <input
               type="text"
-              id="username"
-              ref={emailRef}
-              value={email}
-              onChange={handleUserInput}
+              id="lastname"
+              value={lastName}
               autoComplete="off"
               disabled
             />
@@ -106,7 +101,7 @@ export default function Account() {
           <button className="edit-button" type="submit">
             Save
           </button>
-          <button className="edit-button" onClick={handleCancel}>
+          <button className="edit-button" onClick={handleEdit}>
             Cancel
           </button>
           <p>An error occurred. Please try it again.</p>

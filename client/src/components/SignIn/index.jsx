@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@users/authSlice";
 import { isRemembered } from "@users/authSlice";
@@ -14,6 +14,10 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
+
+  // Catch authSlice state
+  const CurrentUser = useSelector((state) => state.auth);
+  console.log("isRemembered:", CurrentUser.isRemembered);
 
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
@@ -34,17 +38,20 @@ export default function SignIn() {
 
     try {
       const userData = await login({ email, password }).unwrap();
-      console.log("OK", userData);
-      if ("data" in userData) {
-        const { token } = userData.data.body;
-        if (!isRemembered) {
+      console.log("userData", userData);
+      console.log("userData.body", userData.body);
+      console.log("userData.body.token", userData.body.token);
+
+      if (true) {
+        const { token } = userData.body;
+        if (true) {
           window.sessionStorage.setItem("tokenID", token);
         } else {
           window.localStorage.setItem("tokenID", token);
         }
       }
       // saving username and get an access token
-      dispatch(setCredentials({ ...userData, email }));
+      dispatch(setCredentials({ ...CurrentUser, token: userData.body.token }));
       setEmail("");
       setPassword("");
       navigate("/profile");
@@ -65,6 +72,8 @@ export default function SignIn() {
   const handleUserInput = (e) => setEmail(e.target.value);
 
   const handlePwdInput = (e) => setPassword(e.target.value);
+
+  const handleRememberMe = (e) => dispatch(isRemembered(e.target.checked));
 
   const content = isLoading ? (
     <h1>Loading...</h1>
@@ -97,9 +106,7 @@ export default function SignIn() {
           type="checkbox"
           id="remember-me"
           defaultChecked={false}
-          onChange={(e) => {
-            dispatch(isRemembered(e.target.checked));
-          }}
+          onChange={handleRememberMe}
         />
         <label htmlFor="remember-me">Remember me</label>
       </div>

@@ -1,5 +1,6 @@
 // Import from '@reduxjs/toolkit/query' if not using the auto-generated hooks
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { setCredentials, logOut } from "@users/authSlice";
 
 // Change URL in production
 const apiBaseUrl = "http://localhost:3001/api/v1";
@@ -10,7 +11,6 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiBaseUrl,
     prepareHeaders: (headers, { getState }) => {
-      console.log("prepareHeaders is called");
       const token = getState().auth.token;
       if (token) {
         // Depends on how it's written in API

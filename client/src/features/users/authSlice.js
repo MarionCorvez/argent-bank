@@ -1,29 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// voir si ajout de "isLoggedIn: false," au state initial
 const initialState = {
-  user: null,
-  token: null,
+  user: {
+    userName: "",
+    firstName: "",
+    lastName: "",
+  },
+  token: localStorage.getItem("tokenID")
+    ? localStorage.getItem("tokenID")
+    : null,
   isRemembered: false,
   isEditing: false,
+  isLoggedIn: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Login
+    // LogIn
     setCredentials: (state, action) => {
-      const { user, accessToken } = action.payload;
+      const { user, token } = action.payload;
       state.user = user;
-      state.token = accessToken;
+      state.token = token;
+      state.isLoggedIn = true;
     },
     logOut: (state) => {
-      state.user = null;
-      state.token = null;
+      state.user = initialState;
+      state.token = initialState;
+      state.isRemembered = false;
+      state.isEditing = false;
+      state.isLoggedIn = false;
     },
     // Set token in local or session storage
     isRemembered(state, action) {
+      // voir state.isRemembered = true;
+      // ou state.isRemembered = !state.isRemembered;
       state.isRemembered = action.payload;
     },
     // Display editing user section
@@ -38,6 +50,7 @@ export const { setCredentials, logOut, isRemembered, setEditing } =
 
 export default authSlice.reducer;
 
+// Unused for now
 export const selectCurrentUser = (state) => state.auth.user;
 export const selectCurrentToken = (state) => state.auth.token;
 export const selectIsRemembered = (state) => state.auth.isRemembered;
