@@ -11,7 +11,7 @@ export default function Profile() {
   // Catch authSlice state
   const CurrentUser = useSelector((state) => state.auth);
   const isLoggedIn = CurrentUser.isLoggedIn;
-  console.log("isLoggedIn:", isLoggedIn);
+  // console.log("isLoggedIn:", isLoggedIn);
 
   // Check connection status after component render
   useEffect(() => {

@@ -27,11 +27,12 @@ export const authApiSlice = apiSlice.injectEndpoints({
     // Check if update is a query or a mutation
     // PATCH is used to modify a part of the record
     // PUT is used to modifiy the full record
+    // remove the brackets body: { userName },
     updateProfile: builder.mutation({
       query: (userName) => ({
         url: "/user/profile",
         method: "PUT",
-        body: { userName },
+        body: userName,
       }),
       invalidatesTags: ["User"], // Refetch the data with this action
     }),

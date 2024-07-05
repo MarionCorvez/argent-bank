@@ -1,9 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "@users/authSlice";
-import { isRemembered } from "@users/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials, setRemember } from "@users/authSlice";
 import { useLoginMutation } from "@users/authApiSlice";
 
 export default function SignIn() {
@@ -17,7 +15,13 @@ export default function SignIn() {
 
   // Catch authSlice state
   const CurrentUser = useSelector((state) => state.auth);
-  console.log("isRemembered:", CurrentUser.isRemembered);
+
+  // Manage remember options
+  const isRemembered = CurrentUser.isRemembered;
+  const handleRememberMe = () => {
+    dispatch(setRemember());
+  };
+  // console.log("isRemembered:", isRemembered);
 
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
@@ -38,16 +42,14 @@ export default function SignIn() {
 
     try {
       const userData = await login({ email, password }).unwrap();
-      console.log("userData", userData);
       console.log("userData.body", userData.body);
-      console.log("userData.body.token", userData.body.token);
 
-      if (true) {
+      if (userData) {
         const { token } = userData.body;
-        if (true) {
-          window.sessionStorage.setItem("tokenID", token);
+        if (!isRemembered) {
+          window.sessionStorage.setItem("token", token);
         } else {
-          window.localStorage.setItem("tokenID", token);
+          window.localStorage.setItem("token", token);
         }
       }
       // saving username and get an access token
@@ -72,8 +74,6 @@ export default function SignIn() {
   const handleUserInput = (e) => setEmail(e.target.value);
 
   const handlePwdInput = (e) => setPassword(e.target.value);
-
-  const handleRememberMe = (e) => dispatch(isRemembered(e.target.checked));
 
   const content = isLoading ? (
     <h1>Loading...</h1>

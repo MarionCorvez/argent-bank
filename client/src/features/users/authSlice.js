@@ -1,14 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const hasToken =
+  localStorage.getItem("token") || sessionStorage.getItem("token");
+
 const initialState = {
   user: {
     userName: "",
     firstName: "",
     lastName: "",
   },
-  token: localStorage.getItem("tokenID")
-    ? localStorage.getItem("tokenID")
-    : null,
+  token: hasToken ? hasToken : null,
   isRemembered: false,
   isEditing: false,
   isLoggedIn: false,
@@ -27,31 +28,33 @@ const authSlice = createSlice({
     },
     logOut: (state) => {
       state.user = initialState;
-      state.token = initialState;
+      state.token =
+        localStorage.removeItem("token") || sessionStorage.removeItem("token");
       state.isRemembered = false;
       state.isEditing = false;
       state.isLoggedIn = false;
     },
     // Set token in local or session storage
-    isRemembered(state, action) {
-      // voir state.isRemembered = true;
-      // ou state.isRemembered = !state.isRemembered;
-      state.isRemembered = action.payload;
+    setRemember: (state) => {
+      state.isRemembered = !state.isRemembered;
     },
     // Display editing user section
-    setEditing(state) {
+    setEditing: (state) => {
       state.isEditing = !state.isEditing;
+    },
+    // Patch new username
+    updateUsername: (state, action) => {
+      state.user.userName = action.payload;
     },
   },
 });
 
-export const { setCredentials, logOut, isRemembered, setEditing } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  logOut,
+  setRemember,
+  setEditing,
+  updateUsername,
+} = authSlice.actions;
 
 export default authSlice.reducer;
-
-// Unused for now
-export const selectCurrentUser = (state) => state.auth.user;
-export const selectCurrentToken = (state) => state.auth.token;
-export const selectIsRemembered = (state) => state.auth.isRemembered;
-export const selectIsEditing = (state) => state.auth.isEditing;

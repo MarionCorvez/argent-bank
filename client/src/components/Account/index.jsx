@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCredentials, setEditing } from "@users/authSlice";
+import { setCredentials, setEditing, updateUsername } from "@users/authSlice";
 import {
   useGetProfileMutation,
   useUpdateProfileMutation,
@@ -9,23 +9,8 @@ import {
 export default function Account() {
   const dispatch = useDispatch();
 
-  // Catch authSlice state
-  const CurrentUser = useSelector((state) => state.auth);
-
-  const token = CurrentUser.token;
-  console.log("token:", token);
-  const isLoggedIn = CurrentUser.isLoggedIn;
-  console.log("isLoggedIn:", isLoggedIn);
-
-  // Display edit section
-  const isEditing = CurrentUser.isEditing;
-  const handleEdit = (event) => {
-    event.preventDefault();
-    dispatch(setEditing());
-  };
-
   // Get profile informations
-  const [profile, { isLoading }] = useGetProfileMutation();
+  const [profile] = useGetProfileMutation();
   useEffect(() => {
     const getProfile = async () => {
       const DataUser = await profile().unwrap();
@@ -37,53 +22,87 @@ export default function Account() {
     });
   }, []);
 
-  // Display user informations
+  // Catch authSlice state and display user informations
+  const CurrentUser = useSelector((state) => state.auth);
+  const token = CurrentUser.token;
+  // console.log("token:", token);
+  // const isLoggedIn = CurrentUser.isLoggedIn;
+  // console.log("isLoggedIn:", isLoggedIn);
   const userName = CurrentUser.user.userName;
   const firstName = CurrentUser.user.firstName;
   const lastName = CurrentUser.user.lastName;
   // Display first + lastname according to design/user.html
   const welcome = CurrentUser.user ? firstName + " " + lastName + "!" : "";
 
-  // Manage edit username
-
-  //const [username, setUsername] = useState(CurrentUser.user.userName);
-  // const [username, setUsername] = useState("");
-
-  const handleUserInput = (event) => {
-    event.preventDefault();
-    // username(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
+  // Display edit section
+  const isEditing = CurrentUser.isEditing;
+  const handleEdit = (event) => {
     event.preventDefault();
     dispatch(setEditing());
   };
 
-  // Edit username
+  // Manage error message
+  const errRef = useRef();
+  const [errMsg, setErrMsg] = useState("");
+  useEffect(() => {
+    setErrMsg("");
+  }, [userName]);
+
+  // Manage edit username
+  const [editUserName, setEditUserName] = useState(userName);
+
+  const handleUserInput = (event) => {
+    setEditUserName(event.target.value);
+  };
+
+  // Dave Gray's method
   /*   const [updateProfile, { isSuccess, isError, error }] =
     useUpdateProfileMutation();
-  const [username, setUsername] = useState(CurrentUser.user.userName);
-  const onUsernameChanged = (e) => setUsername(e.target.value);
 
-  const onSaveUserClicked = async (e) => {
-    if (password) {
-      await updateProfile({ id: user.id, username, password, roles, active });
-    } else {
-      await updateUser({ id: user.id, username, roles, active });
-    }
-  }; */
-
-  /*   const [setUserName] = useUpdateProfileMutation();
   useEffect(() => {
-    const putNewUsername = async () => {
-      const DataUsername = await newUsername().unwrap();
-      return DataUsername;
-    };
-    putNewUsername().then((resp) => {
-      console.log(resp.body);
-      dispatch(setCredentials({ ...CurrentUser, user: resp.body }));
-    });
-  }, []); */
+    console.log(isSuccess);
+    if (isSuccess) {
+      dispatch(setEditing());
+      setEditUserName("");
+    }
+  }, [isSuccess]); */
+
+  // Manage username edit on form submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    dispatch(setEditing());
+    // Appel RTK ne fonctionne pas
+    /*     try {
+      const response = await updateProfile({
+        userName: editUserName,
+      }); */
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/v1/user/profile",
+        {
+          method: "PUT",
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userName: editUserName,
+          }),
+        }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        dispatch(updateUsername(editUserName));
+        console.log("Username has been updated with success: ", responseData);
+      } else {
+        console.error("Error: ", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error: ", error);
+      setErrMsg("An error occurred. Please try it again.");
+    }
+  };
 
   const content = (
     <>
@@ -107,7 +126,8 @@ export default function Account() {
             <input
               type="text"
               id="username"
-              value={userName}
+              name="userNameInput"
+              defaultValue={userName}
               onChange={handleUserInput}
               autoComplete="off"
             />
@@ -138,7 +158,13 @@ export default function Account() {
           <button className="edit-button" onClick={handleEdit}>
             Cancel
           </button>
-          <p>An error occurred. Please try it again.</p>
+          <p
+            ref={errRef}
+            className={errMsg ? "is-visible" : "is-hidden"}
+            aria-live="assertive"
+          >
+            {errMsg}
+          </p>
         </form>
       </section>
     </>
