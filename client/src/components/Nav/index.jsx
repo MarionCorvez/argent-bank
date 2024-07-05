@@ -8,12 +8,8 @@ export default function Nav() {
 
   // Catch authSlice state
   const CurrentUser = useSelector((state) => state.auth);
-  const userName = CurrentUser.user.userName;
-  const displayUsername = CurrentUser.user ? userName : "";
-  // const isLoggedIn = CurrentUser.isLoggedIn;
-  // console.log(CurrentUser.token);
-  // console.log(CurrentUser.user.userName);
-
+  const username = CurrentUser.user.userName;
+  console.log(CurrentUser.user.userName);
   const isLoggedIn = CurrentUser.token;
 
   // Manage logout
@@ -36,7 +32,7 @@ export default function Nav() {
         <div className="main-nav-wrapper">
           <NavLink to="/profile" className="main-nav-item">
             <i className="fa fa-user-circle"></i>
-            {displayUsername}
+            {username}
           </NavLink>
           <div onClick={handleLogOut} className="main-nav-item pointer">
             <i className="fa fa-sign-out"></i>

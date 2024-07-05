@@ -12,7 +12,6 @@ const initialState = {
   token: hasToken ? hasToken : null,
   isRemembered: false,
   isEditing: false,
-  isLoggedIn: false,
 };
 
 const authSlice = createSlice({
@@ -24,7 +23,6 @@ const authSlice = createSlice({
       const { user, token } = action.payload;
       state.user = user;
       state.token = token;
-      state.isLoggedIn = true;
     },
     logOut: (state) => {
       state.user = initialState;
@@ -32,7 +30,6 @@ const authSlice = createSlice({
         localStorage.removeItem("token") || sessionStorage.removeItem("token");
       state.isRemembered = false;
       state.isEditing = false;
-      state.isLoggedIn = false;
     },
     // Set token in local or session storage
     setRemember: (state) => {
