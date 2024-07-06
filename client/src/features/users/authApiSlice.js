@@ -8,15 +8,12 @@ export const authApiSlice = apiSlice.injectEndpoints({
       query: (credentials) => ({
         url: "/user/login",
         method: "POST",
-        body: { ...credentials }, // or body: credentials,
-        // or body: { email, password },
-        // & query: ({ email, password }) => ({
+        body: { ...credentials },
         headers: {
           "Content-Type": "application/json",
         },
       }),
     }),
-    // Test with query failed
     getProfile: builder.mutation({
       query: () => ({
         url: "/user/profile",
@@ -24,15 +21,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["User"], // Tag is provided through GET request
     }),
-    // Check if update is a query or a mutation
     // PATCH is used to modify a part of the record
     // PUT is used to modifiy the full record
-    // remove the brackets body: { userName },
+    // Do not remove the brackets body: { userName }
     updateProfile: builder.mutation({
       query: (userName) => ({
         url: "/user/profile",
         method: "PUT",
-        body: userName,
+        body: { userName },
       }),
       invalidatesTags: ["User"], // Refetch the data with this action
     }),

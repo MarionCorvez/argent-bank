@@ -7,9 +7,8 @@
     padding: 1rem;
   }
   &-wrapper {
-    display: flex;
+    @extend %flex-a--center;
     justify-content: center;
-    align-items: center;
     gap: 1rem;
     padding: 0.5rem;
     & input {

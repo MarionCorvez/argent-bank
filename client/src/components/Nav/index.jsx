@@ -9,7 +9,6 @@ export default function Nav() {
   // Catch authSlice state
   const CurrentUser = useSelector((state) => state.auth);
   const username = CurrentUser.user.userName;
-  console.log(CurrentUser.user.userName);
   const isLoggedIn = CurrentUser.token;
 
   // Manage logout

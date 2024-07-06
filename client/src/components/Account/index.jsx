@@ -17,17 +17,13 @@ export default function Account() {
       return DataUser;
     };
     getProfile().then((resp) => {
-      console.log(resp.body);
+      // console.log(resp.body);
       dispatch(setCredentials({ ...CurrentUser, user: resp.body }));
     });
   }, []);
 
   // Catch authSlice state and display user informations
   const CurrentUser = useSelector((state) => state.auth);
-  const token = CurrentUser.token;
-  // console.log("token:", token);
-  // const isLoggedIn = CurrentUser.isLoggedIn;
-  // console.log("isLoggedIn:", isLoggedIn);
   const userName = CurrentUser.user.userName;
   const firstName = CurrentUser.user.firstName;
   const lastName = CurrentUser.user.lastName;
@@ -49,57 +45,25 @@ export default function Account() {
   }, [userName]);
 
   // Manage edit username
-  const [editUserName, setEditUserName] = useState(userName);
+  const [editUserName, setEditUserName] = useState(CurrentUser.user.userName);
+  const [updateProfile, { isSuccess, isError, error }] =
+    useUpdateProfileMutation();
 
   const handleUserInput = (event) => {
     setEditUserName(event.target.value);
   };
 
-  // Dave Gray's method
-  /*   const [updateProfile, { isSuccess, isError, error }] =
-    useUpdateProfileMutation();
-
-  useEffect(() => {
-    console.log(isSuccess);
-    if (isSuccess) {
-      dispatch(setEditing());
-      setEditUserName("");
-    }
-  }, [isSuccess]); */
-
-  // Manage username edit on form submit
   const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(setEditing());
-    // Appel RTK ne fonctionne pas
-    /*     try {
-      const response = await updateProfile({
-        userName: editUserName,
-      }); */
     try {
-      const response = await fetch(
-        "http://localhost:3001/api/v1/user/profile",
-        {
-          method: "PUT",
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            userName: editUserName,
-          }),
-        }
-      );
-      if (response.ok) {
-        const responseData = await response.json();
+      const response = await updateProfile(editUserName);
+      if (isSuccess) {
+        dispatch(setEditing());
+        // console.log(response.data);
         dispatch(updateUsername(editUserName));
-        console.log("Username has been updated with success: ", responseData);
-      } else {
-        console.error("Error: ", response.statusText);
       }
-    } catch (error) {
-      console.error("Error: ", error);
+    } catch (isError) {
+      // console.error("Error: ", error);
       setErrMsg("An error occurred. Please try it again.");
     }
   };

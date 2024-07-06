@@ -42,7 +42,7 @@ export default function SignIn() {
 
     try {
       const userData = await login({ email, password }).unwrap();
-      console.log("userData.body", userData.body);
+      // console.log("userData.body", userData.body);
 
       if (userData) {
         const { token } = userData.body;
@@ -85,7 +85,7 @@ export default function SignIn() {
           type="text"
           id="username"
           ref={emailRef}
-          value={email}
+          defaultValue={email}
           onChange={handleUserInput}
           autoComplete="off"
           required
@@ -97,7 +97,7 @@ export default function SignIn() {
           type="password"
           id="password"
           onChange={handlePwdInput}
-          value={password}
+          defaultValue={password}
           required
         />
       </div>
