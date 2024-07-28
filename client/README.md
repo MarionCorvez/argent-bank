@@ -23,7 +23,7 @@ Argent Bank est une nouvelle banque en ligne qui souhaite percer dans le secteur
 
 1. [x] Étape 1 : Mettre en place l'application
 2. [x] Étape 2 : Intégrer les maquettes en version statique
-3. [x] Étape 3 : Mettre en place le state global avec Redux et la connection de l'utilisateur
+3. [x] Étape 3 : Mettre en place le state global avec Redux et la connexion de l'utilisateur
 4. [x] Étape 4 : Protéger la route du profil utilisateur
 5. [x] Étape 5 : Écrire les différents endpoints dans le fichier Swagger
 6. [x] Étape 6 : Faire une revue complète du projet

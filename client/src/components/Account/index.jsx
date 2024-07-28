@@ -62,9 +62,11 @@ export default function Account() {
         // console.log(response.data);
         dispatch(updateUsername(editUserName));
       }
-    } catch (isError) {
-      // console.error("Error: ", error);
-      setErrMsg("An error occurred. Please try it again.");
+    } catch (error) {
+      console.error("Error: ", error);
+      if (error.originalStatus === 404) {
+        setErrMsg("An error occurred. Please try it again.");
+      }
     }
   };
 

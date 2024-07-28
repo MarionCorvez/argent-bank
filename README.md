@@ -26,7 +26,7 @@ mongo --version
 1. [x] Fork this repo
 1. [x] Clone the repo onto your computer
 1. [x] Open a terminal window in the cloned project
-1. [ ] Run the following commands:
+1. [x] Run the following commands:
 
 ```bash
 # Install dependencies
